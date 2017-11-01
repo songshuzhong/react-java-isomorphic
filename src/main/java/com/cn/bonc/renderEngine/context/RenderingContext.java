@@ -1,7 +1,10 @@
 package com.cn.bonc.renderEngine.context;
 
 /**
- * Created by Administrator on 2017/10/27.
+ *@author sshuzhong
+ *@mailTo <a href="mailto:songshuzhong@bonc.com.cn">Song ShuZhong</a>
+ *@Date 2017/08/10
+ *@desc CharResponseWrapper
  */
 public class RenderingContext {
     private final AppContext context;

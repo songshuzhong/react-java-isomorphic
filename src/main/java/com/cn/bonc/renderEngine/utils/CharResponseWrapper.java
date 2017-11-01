@@ -16,21 +16,25 @@ import java.util.Map;
  *@desc CharResponseWrapper
  */
 public class CharResponseWrapper extends HttpServletResponseWrapper {
-    private StringWriter writer;
 
-    private ByteArrayOutputStream baos;
+    private ByteArrayOutputStream baos = new ByteArrayOutputStream();
+
+    private PrintWriter writer = new PrintWriter(baos);
 
     public CharResponseWrapper(HttpServletResponse response) {
         super(response);
     }
 
+/*
     @Override
     public String toString() {
         if (writer != null) {
-            return writer.toString();
+            String s = writer.toString();
+            return s;
         } else if (baos != null) {
             try {
-                return baos.toString("UTF-8");
+                String s = baos.toString("UTF-8");
+                return s;
             } catch (UnsupportedEncodingException e) {
                 // May not happen
                 return null;
@@ -43,13 +47,11 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
     public Map<String, Object> toJson() throws IOException {
         return new ObjectMapper().readValue(this.toString(), Map.class);
     }
+*/
 
     @Override
     public PrintWriter getWriter() throws IOException {
-        if (writer == null) {
-            writer = new StringWriter();
-        }
-        return new PrintWriter(writer);
+        return writer;
     }
 
     /**
@@ -94,4 +96,23 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
         };
     }
 
+    public ByteArrayOutputStream getByteArrayOutPutStream() {
+        return baos;
+    }
+
+    public String getTextContent() {
+        flush();
+        return baos.toString();
+    }
+
+    public void flush() {
+        try {
+            writer.flush();
+            writer.close();
+            baos.flush();
+            baos.close();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 }

@@ -23,25 +23,25 @@ import java.util.*;
  */
 public class ReactEngineFilter implements Filter {
     @Override
-    public void init(FilterConfig filterConfig) throws ServletException {
-
-    }
+    public void init(FilterConfig filterConfig) throws ServletException {}
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
 
-        filterChain.doFilter(servletRequest, servletResponse);
+        CharResponseWrapper crw = new CharResponseWrapper(httpServletResponse);
+
+        filterChain.doFilter(servletRequest, crw);
 
         String responseContentType = httpServletResponse.getContentType();
         String requestAccept = httpServletRequest.getHeader("Accept");
+        System.out.println(requestAccept + " " + responseContentType + " " + ((HttpServletRequest) servletRequest).getRequestURI());
 
         if (responseContentType == null && requestAccept == null ) {
             filterChain.doFilter(servletRequest, servletResponse);
             return;
-        } else if (responseContentType == null && requestAccept.contains("text/html")) {
-            CharResponseWrapper crw = new CharResponseWrapper(httpServletResponse);
+        } else if (requestAccept.contains("text/html") || responseContentType.contains("text/html")) {
 
             Map<String, Object> state = new HashMap<>();
             AppContext context = new AppContext(httpServletRequest.getContextPath());
@@ -56,19 +56,17 @@ public class ReactEngineFilter implements Filter {
                 e.printStackTrace();
             }
 
+            System.out.println(html);
             servletResponse.setContentType("text/html;charset=UTF-8");
+
             PrintWriter out = servletResponse.getWriter();
-            out.print(html);
+            out.write(html);
             out.close();
-        } else {
-            return;
         }
     }
 
     @Override
-    public void destroy() {
-
-    }
+    public void destroy() {}
 
     private String getByteChunk(ServletResponse servletResponse) throws Exception {
         CoyoteOutputStream os = (CoyoteOutputStream)servletResponse.getOutputStream();

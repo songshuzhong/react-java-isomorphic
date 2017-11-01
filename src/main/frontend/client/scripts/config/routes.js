@@ -10,7 +10,12 @@ const routes = [
     component: Home
   },
   {
-    path: '/home',
+    path: '/jsp',
+    exact: true,
+    component: Home
+  },
+  {
+    path: '/jsx',
     exact: true,
     component: Home
   },
