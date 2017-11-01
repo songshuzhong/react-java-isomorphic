@@ -3,12 +3,16 @@ package com.cn.bonc.renderEngine.utils;
 import com.cn.bonc.renderEngine.j2v8.J2V8ReactEnginer;
 import com.cn.bonc.renderEngine.context.AppContext;
 import com.cn.bonc.renderEngine.context.RenderingContext;
+import org.apache.catalina.connector.CoyoteOutputStream;
+import org.apache.coyote.OutputBuffer;
+import org.apache.tomcat.util.buf.ByteChunk;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.lang.reflect.Field;
 import java.util.*;
 
 /**
@@ -64,5 +68,24 @@ public class ReactEngineFilter implements Filter {
     @Override
     public void destroy() {
 
+    }
+
+    private String getByteChunk(ServletResponse servletResponse) throws Exception {
+        CoyoteOutputStream os = (CoyoteOutputStream)servletResponse.getOutputStream();
+        Class<CoyoteOutputStream> c = CoyoteOutputStream.class;
+        String byteChunks = "";
+        Field fs = c.getDeclaredField("ob");
+        if (fs.getType().toString().endsWith("OutputBuffer")) {
+            fs.setAccessible(true);
+            OutputBuffer ob = (OutputBuffer) fs.get(os);
+            Class<OutputBuffer> cc = OutputBuffer.class;
+            Field ff = cc.getDeclaredField("outputChunk");
+            ff.setAccessible(true);
+            if (ff.getType().toString().endsWith("ByteChunk")) {
+                ByteChunk bc = (ByteChunk) ff.get(ob);
+                byteChunks = new String(bc.getBytes(), "UTF-8");
+            }
+        }
+        return byteChunks;
     }
 }
