@@ -1,0 +1,27 @@
+# Dependency directories
+node_modules/
+
+# Logs
+logs
+*.log
+npm-debug.log*
+
+# JetBrains IDEs
+.idea/
+
+# modules version lock
+package-lock.json
+
+# vscode
+.vscode
+
+# build
+/build/
+
+# target
+/target/
+
+# static resources
+#/public/
+
+
