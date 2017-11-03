@@ -15,6 +15,7 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -50,15 +51,15 @@ public class Simple {
     }
 
     @ResponseBody
-    @RequestMapping(value = "/rest/api", method = RequestMethod.GET)
-    public Map restful() {
+    @RequestMapping(value = "/rest/api", method = RequestMethod.GET, produces="application/json")
+    public Map restful(HttpServletResponse response) {
         Map map = new HashMap();
         map.put("key1", "value1");
         return map;
     }
 
     @ResponseBody
-    @RequestMapping(value = "/jsx/rest/api", method = RequestMethod.GET)
+    @RequestMapping(value = "/jsx/rest/api", method = RequestMethod.GET, produces="application/json")
     public Map reactRestful() {
         Map map = new HashMap();
         map.put("key1", "value1");

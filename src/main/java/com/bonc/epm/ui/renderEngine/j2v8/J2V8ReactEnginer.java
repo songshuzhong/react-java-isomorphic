@@ -28,6 +28,8 @@ public class J2V8ReactEnginer {
     }
 
     private void initRuntime(V8 runtime, List<V8Value> runtimeObject, RenderingContext routerCtx) {
+        Console.registerAsJavaMethod(runtime);
+
         String __CONTEXT_PATH__ = "";
         if (routerCtx.getContext().getContextPath() != "") {
             __CONTEXT_PATH__ = routerCtx.getContext().getContextPath().substring(1);
