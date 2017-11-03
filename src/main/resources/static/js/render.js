@@ -8,7 +8,6 @@ function render( model, context ) {
 
     var state = JSON.parse( model );
     var ctx = JSON.parse( context );
-    console.log(ctx);
 
     return EPMUIApp.ssr( state, ctx );
 }

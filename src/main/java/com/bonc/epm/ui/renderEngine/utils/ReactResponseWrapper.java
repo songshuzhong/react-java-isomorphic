@@ -10,19 +10,43 @@ import java.io.*;
  *@author sshuzhong
  *@mailTo <a href="mailto:songshuzhong@bonc.com.cn">Song ShuZhong</a>
  *@Date 2017/08/10
- *@desc CharResponseWrapper
+ *@desc ReactResponseWrapper
  */
-public class CharResponseWrapper extends HttpServletResponseWrapper {
+public class ReactResponseWrapper extends HttpServletResponseWrapper {
     private ByteArrayOutputStream buffer = null;
     private ServletOutputStream out = null;
     private PrintWriter writer = null;
+    private int httpStatus;
 
-    public CharResponseWrapper(HttpServletResponse resp) throws IOException {
+    public ReactResponseWrapper(HttpServletResponse resp) throws IOException {
         super(resp);
         buffer = new ByteArrayOutputStream();
         out = new WapperedOutputStream(buffer);
         writer = new PrintWriter(new OutputStreamWriter(buffer, this.getCharacterEncoding()));
     }
+
+    @Override
+    public void sendError(int sc) throws IOException {
+        httpStatus = sc;
+        super.sendError(sc);
+    }
+
+    @Override
+    public void sendError(int sc, String msg) throws IOException {
+        httpStatus = sc;
+        super.sendError(sc, msg);
+    }
+
+    @Override
+    public void setStatus(int sc) {
+        httpStatus = sc;
+        super.setStatus(sc);
+    }
+
+    public int getStatus() {
+        return httpStatus;
+    }
+
     @Override
     public ServletOutputStream getOutputStream() throws IOException {
         return out;

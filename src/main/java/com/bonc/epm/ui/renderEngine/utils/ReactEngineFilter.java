@@ -27,7 +27,7 @@ public class ReactEngineFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
-        CharResponseWrapper crw = new CharResponseWrapper(httpServletResponse);
+        ReactResponseWrapper crw = new ReactResponseWrapper(httpServletResponse);
         filterChain.doFilter(servletRequest, crw);
 
         String responseContentType = httpServletResponse.getContentType();
@@ -47,6 +47,7 @@ public class ReactEngineFilter implements Filter {
             }
 
             servletResponse.setContentType("text/html;charset=UTF-8");
+
             PrintWriter out = servletResponse.getWriter();
             out.write(html);
             out.close();
@@ -59,15 +60,16 @@ public class ReactEngineFilter implements Filter {
     public void destroy() {}
 
     private Map<String,Object> getRequestData(HttpServletRequest request) {
-        Map<String, Object> map = null;
+        Map<String, Object> map = new HashMap<>();
         Enumeration enumeration = request.getAttributeNames();
+
         if (enumeration.hasMoreElements()) {
-            map = new HashMap<String, Object>();
             while (enumeration.hasMoreElements()) {
                 String inputName = (String) enumeration.nextElement();
                 map.put(inputName, request.getParameter(inputName));
             }
         }
+
         return map;
     }
 
