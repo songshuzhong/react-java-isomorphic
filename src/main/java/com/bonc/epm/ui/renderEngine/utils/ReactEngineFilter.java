@@ -65,11 +65,16 @@ public class ReactEngineFilter implements Filter {
     @Override
     public void destroy() {}
 
+    /**
+     * separate model data from request
+     * @param request
+     * @return Map<String, Object>
+     */
     private Map<String,Object> getRequestData(HttpServletRequest request) {
-        Map<String, Object> map = null;
+        Map<String, Object> map = new HashMap<>();
         Enumeration enumeration = request.getAttributeNames();
+
         if (enumeration.hasMoreElements()) {
-            map = new HashMap<String, Object>();
             while (enumeration.hasMoreElements()) {
                 String inputName = (String) enumeration.nextElement();
                 map.put(inputName, request.getParameter(inputName));

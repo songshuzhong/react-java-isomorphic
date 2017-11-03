@@ -19,12 +19,20 @@
 
 	<developers>
 		<developer>
-			<name>Song ShuZhong</name>
-			<email>songshuzhong@bonc.com.cn</email>
+			<name>Liu Wenquan</name>
+			<email>liuwenquan@bonc.com.cn</email>
 			<organization>Research and Development Center</organization>
 			<roles>
 				<role>Project Admin</role>
 				<role>Lead Developer</role>
+			</roles>
+		</developer>
+		<developer>
+			<name>Song Shuzhong</name>
+			<email>songshuzhong@bonc.com.cn</email>
+			<organization>China Unicom Business Division</organization>
+			<roles>
+				<role>Developer</role>
 			</roles>
 		</developer>
 	</developers>
