@@ -13,7 +13,6 @@ import java.io.*;
  *@desc CharResponseWrapper
  */
 public class CharResponseWrapper extends HttpServletResponseWrapper {
-
     private ByteArrayOutputStream baos = new ByteArrayOutputStream();
 
     private PrintWriter writer = new PrintWriter(baos);
@@ -59,5 +58,4 @@ public class CharResponseWrapper extends HttpServletResponseWrapper {
             }
         };
     }
-
 }

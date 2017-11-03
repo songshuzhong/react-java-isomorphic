@@ -3,6 +3,7 @@ var global = this;
 var process = {
   env: {}
 };
+
 var console = {};
 [ 'log', 'debug', 'warn', 'error' ].map( ( funcName ) => {
   console[ funcName ] = ( msg ) => print[ funcName ]( ( ( typeof msg == 'string') && msg.constructor == String ) ? msg : JSON.stringify( msg ) );

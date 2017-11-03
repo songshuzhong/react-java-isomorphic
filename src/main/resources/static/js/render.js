@@ -1,12 +1,13 @@
 /**
- * Created by Administrator on 2017/10/29.
+ *@author sshuzhong
+ *@mailTo <a href="mailto:songshuzhong@bonc.com.cn">Song ShuZhong</a>
+ *@Date 2017/08/30
+ *@desc render
  */
 function render( model, context ) {
 
     var state = JSON.parse( model );
     var ctx = JSON.parse( context );
 
-    var rendered = EPMUIApp.ssr( state, ctx );
-
-    return rendered;
+    return EPMUIApp.ssr( state, ctx );
 }
