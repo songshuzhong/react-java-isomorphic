@@ -1,6 +1,6 @@
-package com.cn.bonc.renderEngine.nashorn;
+package com.bonc.epm.ui.renderEngine.nashorn;
 
-import com.cn.bonc.renderEngine.context.RenderingContext;
+import com.bonc.epm.ui.renderEngine.context.RenderingContext;
 import jdk.nashorn.api.scripting.NashornScriptEngine;
 
 import javax.script.ScriptEngineManager;
@@ -34,7 +34,7 @@ public class RhinoReactEnginer {
 
     public String render(Map<String, Object> state, RenderingContext context) {
         try {
-            Object html = engineHolder.get().invokeFunction("ssr", state, context);
+            Object html = engineHolder.get().invokeFunction("render", state, context);
             return String.valueOf(html);
         } catch (Exception e) {
             throw new IllegalStateException("what a pity, the server side render is failed.", e);
