@@ -24,24 +24,15 @@ public class ReactEngineFilter implements Filter {
 
     @Override
     public void doFilter(ServletRequest servletRequest, ServletResponse servletResponse, FilterChain filterChain) throws IOException, ServletException {
-        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
+        HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
+
+        ReactResponseWrapper crw = new ReactResponseWrapper(httpServletResponse);
+        filterChain.doFilter(servletRequest, crw);
 
         String responseContentType = httpServletResponse.getContentType();
-        String requestAccept = httpServletRequest.getHeader("Accept");
 
-        if (responseContentType == null && requestAccept == null ) {
-            filterChain.doFilter(servletRequest, servletResponse);
-        } else if (!requestAccept.contains("text/html") && responseContentType == null) {
-            filterChain.doFilter(servletRequest, servletResponse);
-        } else if (requestAccept.contains("application/json") && responseContentType == null) {
-            filterChain.doFilter(servletRequest, servletResponse);
-        }  else if (responseContentType != null && responseContentType.contains("application/json")) {
-            filterChain.doFilter(servletRequest, servletResponse);
-        } else {
-            CharResponseWrapper crw = new CharResponseWrapper(httpServletResponse);
-            filterChain.doFilter(servletRequest, crw);
-
+        if (responseContentType == null || responseContentType.contains("text/html")) {
             Map<String, Object> state = getRequestData(httpServletRequest);
             AppContext context = new AppContext(httpServletRequest.getContextPath());
             RenderingContext routerCtx = new RenderingContext(context, httpServletRequest.getContextPath(), httpServletRequest.getRequestURI());
@@ -56,9 +47,12 @@ public class ReactEngineFilter implements Filter {
             }
 
             servletResponse.setContentType("text/html;charset=UTF-8");
+
             PrintWriter out = servletResponse.getWriter();
             out.write(html);
             out.close();
+        } else {
+            filterChain.doFilter(servletRequest, servletResponse);
         }
     }
 
@@ -80,6 +74,7 @@ public class ReactEngineFilter implements Filter {
                 map.put(inputName, request.getParameter(inputName));
             }
         }
+
         return map;
     }
 

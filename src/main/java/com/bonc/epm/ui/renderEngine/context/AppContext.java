@@ -4,7 +4,7 @@ package com.bonc.epm.ui.renderEngine.context;
  *@author sshuzhong
  *@mailTo <a href="mailto:songshuzhong@bonc.com.cn">Song ShuZhong</a>
  *@Date 2017/08/10
- *@desc CharResponseWrapper
+ *@desc ReactResponseWrapper
  */
 public class AppContext {
     private final String contextPath;
