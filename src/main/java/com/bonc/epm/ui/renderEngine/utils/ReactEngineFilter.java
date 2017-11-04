@@ -47,7 +47,6 @@ public class ReactEngineFilter implements Filter {
             }
 
             servletResponse.setContentType("text/html;charset=UTF-8");
-
             PrintWriter out = servletResponse.getWriter();
             out.write(html);
             out.close();
