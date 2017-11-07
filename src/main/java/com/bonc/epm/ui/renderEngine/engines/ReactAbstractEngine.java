@@ -20,13 +20,7 @@ public abstract class ReactAbstractEngine implements ReactEngineTool {
      * @throws IOException
      */
     public String readDynamicJs(String path) throws IOException {
-        InputStream in = getClass().getResourceAsStream(path);
-        StringBuffer out = new StringBuffer();
-        byte[] b = new byte[4096];
-        for (int n; (n = in.read(b)) != -1;) {
-            out.append(new String(b, 0, n));
-        }
-        return out.toString();
+        return read(path);
     }
 
     /**
