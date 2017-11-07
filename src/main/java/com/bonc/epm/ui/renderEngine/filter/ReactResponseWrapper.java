@@ -1,7 +1,6 @@
 package com.bonc.epm.ui.renderEngine.filter;
 
 import javax.servlet.ServletOutputStream;
-import javax.servlet.WriteListener;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpServletResponseWrapper;
 import java.io.*;
@@ -81,14 +80,6 @@ public class ReactResponseWrapper extends HttpServletResponseWrapper {
                 baos.write(b, off, len);
             }
 
-            @Override
-            public void setWriteListener(WriteListener listener) {
-            }
-
-            @Override
-            public boolean isReady() {
-                return true;
-            }
         };
     }
 

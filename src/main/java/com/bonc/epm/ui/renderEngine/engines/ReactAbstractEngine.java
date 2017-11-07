@@ -20,7 +20,7 @@ public abstract class ReactAbstractEngine implements ReactEngineTool {
      * @throws IOException
      */
     public String readDynamicJs(String path) throws IOException {
-        InputStream in = getClass().getClassLoader().getResourceAsStream(path);
+        InputStream in = getClass().getResourceAsStream(path);
         StringBuffer out = new StringBuffer();
         byte[] b = new byte[4096];
         for (int n; (n = in.read(b)) != -1;) {
@@ -46,6 +46,7 @@ public abstract class ReactAbstractEngine implements ReactEngineTool {
      */
     public String getMainJsPath(String path) throws IOException{
         String assetMainifest = read(path);
+
         JSONObject jsonObject = JSON.parseObject(assetMainifest);
         return jsonObject.get("main.js").toString();
     }

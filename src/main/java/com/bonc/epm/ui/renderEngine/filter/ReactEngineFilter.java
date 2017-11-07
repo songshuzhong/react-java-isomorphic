@@ -23,7 +23,7 @@ import java.util.*;
 public class ReactEngineFilter implements Filter {
 
     private ReactEngineProxy react;
-    private String engineName = "nashorn";
+    private String engineName = "j2v8";
     private ObjectMapper mapper = new ObjectMapper();
 
     public ReactEngineFilter() {
@@ -114,6 +114,7 @@ public class ReactEngineFilter implements Filter {
         } catch (IOException e) {
             e.printStackTrace();
         }
+
         JSONObject jsonObject = JSON.parseObject(out.toString());
         return jsonObject.get("engineName").toString();
     }

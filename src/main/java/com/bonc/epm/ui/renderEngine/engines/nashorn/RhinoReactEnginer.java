@@ -3,9 +3,6 @@ package com.bonc.epm.ui.renderEngine.engines.nashorn;
 import com.bonc.epm.ui.renderEngine.context.RenderingContext;
 import com.bonc.epm.ui.renderEngine.engines.ReactAbstractEngine;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.springframework.core.NamedThreadLocal;
-import org.springframework.scripting.support.StandardScriptEvalException;
-import org.springframework.scripting.support.StandardScriptUtils;
 
 import javax.script.Invocable;
 import javax.script.ScriptEngine;
@@ -21,7 +18,7 @@ import java.util.*;
  *@desc RhinoReactEnginer
  */
 public class RhinoReactEnginer extends ReactAbstractEngine{
-    private static final ThreadLocal<Map<Object, ScriptEngine>> enginesHolder = new NamedThreadLocal<>("NashornReactTemplateView engines");
+    private static final ThreadLocal<Map<Object, ScriptEngine>> enginesHolder = new ThreadLocal<>();
     private volatile ScriptEngineManager scriptEngineManager;
 
     private ScriptEngine getEngine(RenderingContext routerCtx) {
@@ -44,7 +41,7 @@ public class RhinoReactEnginer extends ReactAbstractEngine{
             this.scriptEngineManager = new ScriptEngineManager(getClass().getClassLoader());
         }
 
-        ScriptEngine engine = StandardScriptUtils.retrieveEngineByName(this.scriptEngineManager, "nashorn");
+        ScriptEngine engine = scriptEngineManager.getEngineByName("nashorn");
         initEngine(engine, routerCtx);
         return engine;
     }
@@ -78,7 +75,7 @@ public class RhinoReactEnginer extends ReactAbstractEngine{
 
             return String.valueOf(html);
         } catch (ScriptException ex) {
-            throw new ServletException("Failed to render script template", new StandardScriptEvalException(ex));
+            throw new ServletException("Failed to render script template");
         }
     }
 
