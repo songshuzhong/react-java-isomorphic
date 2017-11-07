@@ -1,4 +1,4 @@
-package com.bonc.epm.ui.renderEngine.utils;
+package com.bonc.epm.ui.renderEngine.filter;
 
 import javax.servlet.ServletOutputStream;
 import javax.servlet.WriteListener;
@@ -15,25 +15,46 @@ import java.io.*;
 public class ReactResponseWrapper extends HttpServletResponseWrapper {
     private ByteArrayOutputStream baos = new ByteArrayOutputStream();
     private PrintWriter writer = new PrintWriter(baos);
-    private static int HTTP_STATUS = 200;
-    private static int SEND_ERROR = 200;
+    private int status = SC_OK;
 
-    public ReactResponseWrapper(HttpServletResponse response) throws IOException {
+    public ReactResponseWrapper(ReactEngineFilter filter, HttpServletResponse response) throws IOException {
         super(response);
     }
 
     @Override
     public void sendError(int sc) throws IOException {
-        super.sendError(SEND_ERROR);
+        this.status = sc;
+        if (isFound()) {
+            super.sendError(SC_OK);
+        } else {
+            super.setStatus(SC_OK);
+        }
     }
 
     @Override
-    public void setStatus(int sc) {
-        super.setStatus(HTTP_STATUS);
+    public void sendError(int sc, String msg) throws IOException {
+        this.status = sc;
+        if (isFound()) {
+            super.sendError(SC_OK, msg);
+        } else {
+            super.setStatus(SC_OK);
+        }
     }
 
-    public int getStatus() {
-        return HTTP_STATUS;
+    public void setStatus(int status) {
+        this.status = status;
+        super.setStatus(status);
+    }
+
+    @Override
+    public void reset() {
+        this.status = SC_OK;
+        super.reset();
+    }
+
+    @Override
+    public void addHeader(String name, String value) {
+        super.addHeader("Cache-Control", "no-cache, no-store, max-age=0, must-revalidate");
     }
 
     @Override
@@ -69,6 +90,10 @@ public class ReactResponseWrapper extends HttpServletResponseWrapper {
                 return true;
             }
         };
+    }
+
+    public boolean isFound() {
+        return status != SC_NOT_FOUND;
     }
 
 }

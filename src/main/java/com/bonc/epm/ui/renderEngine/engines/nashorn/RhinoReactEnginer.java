@@ -1,0 +1,114 @@
+package com.bonc.epm.ui.renderEngine.engines.nashorn;
+
+import com.bonc.epm.ui.renderEngine.context.RenderingContext;
+import com.bonc.epm.ui.renderEngine.engines.ReactAbstractEngine;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.core.NamedThreadLocal;
+import org.springframework.scripting.support.StandardScriptEvalException;
+import org.springframework.scripting.support.StandardScriptUtils;
+
+import javax.script.Invocable;
+import javax.script.ScriptEngine;
+import javax.script.ScriptEngineManager;
+import javax.script.ScriptException;
+import javax.servlet.ServletException;
+import java.util.*;
+
+/**
+ *@author sshuzhong
+ *@mailTo <a href="mailto:songshuzhong@bonc.com.cn">Song ShuZhong</a>
+ *@Date 2017/10/21
+ *@desc RhinoReactEnginer
+ */
+public class RhinoReactEnginer extends ReactAbstractEngine{
+    private static final ThreadLocal<Map<Object, ScriptEngine>> enginesHolder = new NamedThreadLocal<>("NashornReactTemplateView engines");
+    private volatile ScriptEngineManager scriptEngineManager;
+
+    private ScriptEngine getEngine(RenderingContext routerCtx) {
+        Map<Object, ScriptEngine> engines = enginesHolder.get();
+        if (engines == null) {
+            engines = new HashMap<Object, ScriptEngine>(4);
+            enginesHolder.set(engines);
+        }
+        Object engineKey =  "DEFAULT_REACT_NASHORN_ENGINE";
+        ScriptEngine engine = engines.get(engineKey);
+        if (engine == null) {
+            engine = createEngine(routerCtx);
+            engines.put(engineKey, engine);
+        }
+        return engine;
+    }
+
+    private ScriptEngine createEngine(RenderingContext routerCtx) {
+        if (this.scriptEngineManager == null) {
+            this.scriptEngineManager = new ScriptEngineManager(getClass().getClassLoader());
+        }
+
+        ScriptEngine engine = StandardScriptUtils.retrieveEngineByName(this.scriptEngineManager, "nashorn");
+        initEngine(engine, routerCtx);
+        return engine;
+    }
+
+    private void initEngine(ScriptEngine engine, RenderingContext routerCtx) {
+        String __CONTEXT_PATH__ = "";
+        if (routerCtx.getContext().getContextPath() != "") {
+            __CONTEXT_PATH__ = routerCtx.getContext().getContextPath().substring(1);
+        }
+
+        try {
+            engine.eval(readDynamicJs("static/js/nashorn-polyfill.js"));
+            engine.eval("global.__CONTEXT_PATH__ = '" + __CONTEXT_PATH__ + "'");
+            engine.eval(readMainJs("static/asset-manifest.json"));
+            engine.eval(readDynamicJs("static/js/render.js"));
+        } catch (Throwable ex) {
+            throw new IllegalStateException("Failed to evaluate script in the server side render.", ex);
+        }
+    }
+
+    @Override
+    public String render(String jsonModel, RenderingContext routerCtx) throws Exception {
+        try {
+            ScriptEngine engine = getEngine(routerCtx);
+            Invocable invocable = (Invocable) engine;
+
+            ObjectMapper mapper = new ObjectMapper();
+            String jsonContext = mapper.writeValueAsString(routerCtx);
+
+            Object html = invocable.invokeFunction("render", jsonModel, jsonContext);
+
+            return String.valueOf(html);
+        } catch (ScriptException ex) {
+            throw new ServletException("Failed to render script template", new StandardScriptEvalException(ex));
+        }
+    }
+
+    protected static class EngineKey {
+
+        private final String[] scripts;
+        private final String[] renderScripts;
+        private final String templateScript;
+
+        public EngineKey(String[] scripts, String[] renderScripts, String templateScript) {
+            this.scripts = scripts;
+            this.renderScripts = renderScripts;
+            this.templateScript = templateScript;
+        }
+
+        @Override
+        public boolean equals(Object other) {
+            if (this == other) {
+                return true;
+            }
+            if (!(other instanceof EngineKey)) {
+                return false;
+            }
+            EngineKey otherKey = (EngineKey) other;
+            return (Arrays.equals(this.scripts, otherKey.scripts) && Arrays.equals(this.renderScripts, otherKey.renderScripts) && this.templateScript.equals(otherKey.templateScript));
+        }
+
+        @Override
+        public int hashCode() {
+            return ((Arrays.hashCode(this.scripts) * 31 + Arrays.hashCode(this.renderScripts)) * 31 + this.templateScript.hashCode());
+        }
+    }
+}

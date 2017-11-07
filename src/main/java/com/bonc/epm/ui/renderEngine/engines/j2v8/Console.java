@@ -1,4 +1,4 @@
-package com.bonc.epm.ui.renderEngine.j2v8;
+package com.bonc.epm.ui.renderEngine.engines.j2v8;
 
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Object;
