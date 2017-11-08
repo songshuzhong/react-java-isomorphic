@@ -12,12 +12,16 @@ import java.io.IOException;
  *@desc HTMLReactTemplateView
  */
 public class HTMLReactTemplateView extends ReactAbstractEngine {
-
+    private String templateUrl = null;
     private static String templateCache = null;
+
+    public HTMLReactTemplateView(String templateUrl) {
+        this.templateUrl = templateUrl;
+    }
 
     private String getTemplate() throws IOException {
         if (templateCache == null) {
-            templateCache = getResourceAsString("static/views/index.html");
+            templateCache = getResourceAsString(templateUrl);
         }
 
         return templateCache;

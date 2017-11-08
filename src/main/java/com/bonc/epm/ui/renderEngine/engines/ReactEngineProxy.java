@@ -14,8 +14,8 @@ import com.bonc.epm.ui.renderEngine.engines.nashorn.RhinoReactEnginer;
 public class ReactEngineProxy {
     private ReactEngineTool reactEngineTool;
 
-    public ReactEngineProxy(String name) {
-        switch (name) {
+    public ReactEngineProxy(String reactConfig) {
+        switch (reactConfig) {
             case "j2v8":
                 reactEngineTool = new J2V8ReactEnginer();
                 break;
@@ -23,10 +23,10 @@ public class ReactEngineProxy {
                 reactEngineTool = new RhinoReactEnginer();
                 break;
             case "html":
-                reactEngineTool = new HTMLReactTemplateView();
+                reactEngineTool = new HTMLReactTemplateView(reactConfig);
                 break;
             default:
-                reactEngineTool = new J2V8ReactEnginer();
+                reactEngineTool = new HTMLReactTemplateView(reactConfig);
                 break;
         }
     }

@@ -2,8 +2,8 @@ package com.bonc.epm.ui.renderEngine.engines;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
+import com.bonc.epm.ui.renderEngine.exception.SourceLoaderException;
 
-import java.io.IOException;
 import java.io.InputStream;
 
 /**
@@ -17,14 +17,18 @@ public abstract class ReactAbstractEngine implements ReactEngineTool {
     /**
      * @return polyfill.js or render.js
      */
-    public String readDynamicJs(String path) throws IOException {
-        return getResourceAsString(path);
+    public String readDynamicJs(String path) {
+        try {
+            return getResourceAsString(path);
+        } catch (Exception e) {
+            throw new SourceLoaderException(String.format("EPM UI JAVA Integration: the react engine is faild to load %s, please connect with songshuzhong@bonc.com.cn", path), e);
+        }
     }
 
     /**
      * @return main[hash].js
      */
-    public String readMainJs(String mainJsPath) throws IOException{
+    public String readMainJs(String mainJsPath) {
         String path = getMainJsPath(mainJsPath);
         return getResourceAsString(path);
     }
@@ -32,7 +36,7 @@ public abstract class ReactAbstractEngine implements ReactEngineTool {
     /**
      * @return the path of main[hash].js
      */
-    public String getMainJsPath(String path) throws IOException{
+    public String getMainJsPath(String path) {
         String assetMainifest = getResourceAsString(path);
 
         JSONObject jsonObject = JSON.parseObject(assetMainifest);
@@ -42,12 +46,16 @@ public abstract class ReactAbstractEngine implements ReactEngineTool {
     /**
      * @return js file
      */
-    public String getResourceAsString(String path) throws IOException{
+    public String getResourceAsString(String path) {
         InputStream in = getClass().getClassLoader().getResourceAsStream(path);
         StringBuffer out = new StringBuffer();
         byte[] b = new byte[4096];
-        for (int n; (n = in.read(b)) != -1;) {
-            out.append(new String(b, 0, n));
+        try {
+            for (int n; (n = in.read(b)) != -1;) {
+                out.append(new String(b, 0, n));
+            }
+        } catch (Exception e) {
+            throw new SourceLoaderException(String.format("EPM UI JAVA Integration: the source loaded faild, because the %s cannot be identified", path), e);
         }
         return out.toString();
     }

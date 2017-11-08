@@ -2,6 +2,7 @@ package com.bonc.epm.ui.renderEngine.engines.nashorn;
 
 import com.bonc.epm.ui.renderEngine.context.RenderingContext;
 import com.bonc.epm.ui.renderEngine.engines.ReactAbstractEngine;
+import com.bonc.epm.ui.renderEngine.exception.SourceLoaderException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.script.Invocable;
@@ -57,8 +58,8 @@ public class RhinoReactEnginer extends ReactAbstractEngine{
             engine.eval("global.__CONTEXT_PATH__ = '" + __CONTEXT_PATH__ + "'");
             engine.eval(readMainJs("static/asset-manifest.json"));
             engine.eval(readDynamicJs("static/js/render.js"));
-        } catch (Throwable ex) {
-            throw new IllegalStateException("Failed to evaluate script in the server side render.", ex);
+        } catch (Throwable e) {
+            throw  new SourceLoaderException(String.format("EPM UI JAVA Integration: RhinoReactEngine is faild to execute the main.[hash].js."), e);
         }
     }
 

@@ -83,8 +83,7 @@ public class ReactResponseWrapper extends HttpServletResponseWrapper {
         };
     }
 
-    public boolean isFound() {
+    private boolean isFound() {
         return status != SC_NOT_FOUND;
     }
-
 }

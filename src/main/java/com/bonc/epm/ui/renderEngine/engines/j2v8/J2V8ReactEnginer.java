@@ -2,6 +2,7 @@ package com.bonc.epm.ui.renderEngine.engines.j2v8;
 
 import com.bonc.epm.ui.renderEngine.context.RenderingContext;
 import com.bonc.epm.ui.renderEngine.engines.ReactAbstractEngine;
+import com.bonc.epm.ui.renderEngine.exception.SourceLoaderException;
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Value;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -37,7 +38,7 @@ public class J2V8ReactEnginer extends ReactAbstractEngine{
             runtime.executeVoidScript("global.__CONTEXT_PATH__ = '" + __CONTEXT_PATH__ + "'");
             executeScript(runtime, runtimeObject, readMainJs("static/asset-manifest.json"));
             executeScript(runtime, runtimeObject, readDynamicJs("static/js/render.js"));
-        } catch (IOException e) {
+        } catch (SourceLoaderException e) {
             e.printStackTrace();
         }
     }
@@ -50,7 +51,7 @@ public class J2V8ReactEnginer extends ReactAbstractEngine{
                 runtimeObjects.add((V8Value) object);
             }
         } catch (Exception e) {
-            throw new IllegalStateException(String.format("Failed to execute script %s", script), e);
+            throw  new SourceLoaderException(String.format("EPM UI JAVA Integration: J2V8ReactEngine is faild to execute the %s.", script), e);
         }
     }
 
