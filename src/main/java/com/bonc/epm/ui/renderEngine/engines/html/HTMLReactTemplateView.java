@@ -17,7 +17,7 @@ public class HTMLReactTemplateView extends ReactAbstractEngine {
 
     private String getTemplate() throws IOException {
         if (templateCache == null) {
-            templateCache = getResourceAsString("");
+            templateCache = getResourceAsString("static/views/index.html");
         }
 
         return templateCache;
@@ -27,6 +27,10 @@ public class HTMLReactTemplateView extends ReactAbstractEngine {
     public String render(String jsonModel, RenderingContext routerCtx) throws Exception {
         String contextPath = routerCtx.getContext().getContextPath();
         String view = routerCtx.getLocation();
+
+        jsonModel = java.util.regex.Matcher.quoteReplacement(jsonModel);
+        contextPath = java.util.regex.Matcher.quoteReplacement(contextPath);
+        view = java.util.regex.Matcher.quoteReplacement(view);
 
         String html = getTemplate()
                 .replaceAll("#CONTEXT_PATH_PLACEHOLDER#", contextPath)

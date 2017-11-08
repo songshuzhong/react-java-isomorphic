@@ -1,18 +1,14 @@
 package com.bonc.epm.ui.renderEngine.filter;
 
-import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.bonc.epm.ui.renderEngine.engines.ReactEngineProxy;
 import com.bonc.epm.ui.renderEngine.context.AppContext;
 import com.bonc.epm.ui.renderEngine.context.RenderingContext;
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.servlet.*;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.*;
-import java.util.*;
 
 /**
  *@author sshuzhong
@@ -48,7 +44,7 @@ public class ReactEngineFilter implements Filter {
         if (responseContentType == null || responseContentType.contains("text/html")) {
             String requestExpectType = httpServletRequest.getHeader("Accept");
 
-            String state = getRequestAttribute(httpServletRequest);
+            String state = "";
 
             OutputStream out = servletResponse.getOutputStream();
 
@@ -79,44 +75,5 @@ public class ReactEngineFilter implements Filter {
 
     @Override
     public void destroy() {}
-
-    /**
-     * separate model data from request
-     * @param request
-     * @return Map<String, Object>
-     */
-    private String getRequestAttribute(HttpServletRequest request) throws JsonProcessingException {
-        Map<String, Object> map = new HashMap<>();
-        Enumeration enumeration = request.getAttributeNames();
-
-        if (enumeration.hasMoreElements()) {
-            while (enumeration.hasMoreElements()) {
-                String k = (String) enumeration.nextElement();
-                String v = request.getAttribute(k).toString();
-                map.put(k, v);
-            }
-        }
-
-        return mapper.writeValueAsString(map);
-    }
-
-    /**
-     * @return engineName
-     */
-    private String getEngineName() {
-        InputStream in = getClass().getClassLoader().getResourceAsStream("");
-        StringBuffer out = new StringBuffer();
-        byte[] b = new byte[4096];
-        try {
-            for (int n; (n = in.read(b)) != -1;) {
-                out.append(new String(b, 0, n));
-            }
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-
-        JSONObject jsonObject = JSON.parseObject(out.toString());
-        return jsonObject.get("engineName").toString();
-    }
 
 }

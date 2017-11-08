@@ -15,14 +15,19 @@ public class ReactEngineProxy {
     private ReactEngineTool reactEngineTool;
 
     public ReactEngineProxy(String name) {
-        if (name.equals("j2v8")) {
-            reactEngineTool = new J2V8ReactEnginer();
-        } else if (name.equals("nashorn")) {
-            reactEngineTool = new RhinoReactEnginer();
-        } else if (name.equals("html")) {
-            reactEngineTool = new HTMLReactTemplateView();
-        } else {
-            reactEngineTool = new J2V8ReactEnginer();
+        switch (name) {
+            case "j2v8":
+                reactEngineTool = new J2V8ReactEnginer();
+                break;
+            case "nashorn":
+                reactEngineTool = new RhinoReactEnginer();
+                break;
+            case "html":
+                reactEngineTool = new HTMLReactTemplateView();
+                break;
+            default:
+                reactEngineTool = new J2V8ReactEnginer();
+                break;
         }
     }
 
