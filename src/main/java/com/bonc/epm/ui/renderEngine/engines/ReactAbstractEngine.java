@@ -15,42 +15,34 @@ import java.io.InputStream;
 public abstract class ReactAbstractEngine implements ReactEngineTool {
 
     /**
-     * @param path
      * @return polyfill.js or render.js
-     * @throws IOException
      */
     public String readDynamicJs(String path) throws IOException {
-        return read(path);
+        return getResourceAsString(path);
     }
 
     /**
-     * @param mainJsPath
      * @return main[hash].js
-     * @throws IOException
      */
     public String readMainJs(String mainJsPath) throws IOException{
         String path = getMainJsPath(mainJsPath);
-        return read(path);
+        return getResourceAsString(path);
     }
 
     /**
-     * @param path
      * @return the path of main[hash].js
-     * @throws IOException
      */
     public String getMainJsPath(String path) throws IOException{
-        String assetMainifest = read(path);
+        String assetMainifest = getResourceAsString(path);
 
         JSONObject jsonObject = JSON.parseObject(assetMainifest);
         return jsonObject.get("main.js").toString();
     }
 
     /**
-     * @param path
      * @return js file
-     * @throws IOException
      */
-    public String read(String path) throws IOException{
+    public String getResourceAsString(String path) throws IOException{
         InputStream in = getClass().getClassLoader().getResourceAsStream(path);
         StringBuffer out = new StringBuffer();
         byte[] b = new byte[4096];

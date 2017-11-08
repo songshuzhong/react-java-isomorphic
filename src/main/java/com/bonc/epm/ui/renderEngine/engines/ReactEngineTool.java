@@ -20,6 +20,6 @@ public interface ReactEngineTool {
 
     String getMainJsPath(String path) throws IOException;
 
-    String read(String path) throws IOException;
+    String getResourceAsString(String path) throws IOException;
 
 }

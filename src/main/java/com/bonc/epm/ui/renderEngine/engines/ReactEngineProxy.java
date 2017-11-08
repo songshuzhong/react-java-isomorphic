@@ -1,6 +1,7 @@
 package com.bonc.epm.ui.renderEngine.engines;
 
 import com.bonc.epm.ui.renderEngine.context.RenderingContext;
+import com.bonc.epm.ui.renderEngine.engines.html.HTMLReactTemplateView;
 import com.bonc.epm.ui.renderEngine.engines.j2v8.J2V8ReactEnginer;
 import com.bonc.epm.ui.renderEngine.engines.nashorn.RhinoReactEnginer;
 
@@ -18,6 +19,8 @@ public class ReactEngineProxy {
             reactEngineTool = new J2V8ReactEnginer();
         } else if (name.equals("nashorn")) {
             reactEngineTool = new RhinoReactEnginer();
+        } else if (name.equals("html")) {
+            reactEngineTool = new HTMLReactTemplateView();
         } else {
             reactEngineTool = new J2V8ReactEnginer();
         }
