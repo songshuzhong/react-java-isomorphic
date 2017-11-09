@@ -10,7 +10,7 @@ import com.bonc.epm.ui.renderEngine.context.RenderingContext;
  */
 public interface ReactEngineTool {
 
-    String render(String jsonModel, RenderingContext routerCtx) throws Exception;
+    String render(String jsonModel, RenderingContext routerCtx);
 
     String readDynamicJs(String path);
 

@@ -3,6 +3,9 @@ package com.bonc.epm.ui.renderEngine.engines.nashorn;
 import com.bonc.epm.ui.renderEngine.context.RenderingContext;
 import com.bonc.epm.ui.renderEngine.engines.ReactAbstractEngine;
 import com.bonc.epm.ui.renderEngine.exception.SourceLoaderException;
+import com.eclipsesource.v8.V8;
+import com.eclipsesource.v8.V8Value;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import javax.script.Invocable;
@@ -64,7 +67,7 @@ public class RhinoReactEnginer extends ReactAbstractEngine{
     }
 
     @Override
-    public String render(String jsonModel, RenderingContext routerCtx) throws Exception {
+    public String render(String jsonModel, RenderingContext routerCtx) {
         try {
             ScriptEngine engine = getEngine(routerCtx);
             Invocable invocable = (Invocable) engine;
@@ -75,8 +78,8 @@ public class RhinoReactEnginer extends ReactAbstractEngine{
             Object html = invocable.invokeFunction("render", jsonModel, jsonContext);
 
             return String.valueOf(html);
-        } catch (ScriptException ex) {
-            throw new ServletException("Failed to render script template");
+        } catch (JsonProcessingException | NoSuchMethodException | ScriptException e) {
+            throw new SourceLoaderException(String.format("EPM UI JAVA Integration: RhinoReactEngine's rendering is faild."), e);
         }
     }
 

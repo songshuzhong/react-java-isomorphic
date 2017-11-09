@@ -5,6 +5,7 @@ import com.bonc.epm.ui.renderEngine.engines.ReactAbstractEngine;
 import com.bonc.epm.ui.renderEngine.exception.SourceLoaderException;
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Value;
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 import java.io.IOException;
@@ -33,14 +34,10 @@ public class J2V8ReactEnginer extends ReactAbstractEngine{
             __CONTEXT_PATH__ = routerCtx.getContext().getContextPath().substring(1);
         }
 
-        try {
-            executeScript(runtime, runtimeObject, readDynamicJs("static/js/j2v8-polyfill.js"));
-            runtime.executeVoidScript("global.__CONTEXT_PATH__ = '" + __CONTEXT_PATH__ + "'");
-            executeScript(runtime, runtimeObject, readMainJs("static/asset-manifest.json"));
-            executeScript(runtime, runtimeObject, readDynamicJs("static/js/render.js"));
-        } catch (SourceLoaderException e) {
-            e.printStackTrace();
-        }
+        executeScript(runtime, runtimeObject, readDynamicJs("static/js/j2v8-polyfill.js"));
+        runtime.executeVoidScript("global.__CONTEXT_PATH__ = '" + __CONTEXT_PATH__ + "'");
+        executeScript(runtime, runtimeObject, readMainJs("static/asset-manifest.json"));
+        executeScript(runtime, runtimeObject, readDynamicJs("static/js/render.js"));
     }
 
     private void executeScript(V8 runtime, List<V8Value> runtimeObjects, String script) {
@@ -51,17 +48,22 @@ public class J2V8ReactEnginer extends ReactAbstractEngine{
                 runtimeObjects.add((V8Value) object);
             }
         } catch (Exception e) {
-            throw  new SourceLoaderException(String.format("EPM UI JAVA Integration: J2V8ReactEngine is faild to execute the %s.", script), e);
+            throw new SourceLoaderException(String.format("EPM UI JAVA Integration: J2V8ReactEngine is faild to execute the %s.", script), e);
         }
     }
 
     @Override
-    public String render(String jsonModel, RenderingContext routerCtx) throws Exception {
+    public String render(String jsonModel, RenderingContext routerCtx) {
         List<V8Value> runtimeObjects = new ArrayList<>();
         V8 runtime = createRuntime(runtimeObjects, routerCtx);
 
-        ObjectMapper mapper = new ObjectMapper();
-        String jsonContext = mapper.writeValueAsString(routerCtx);
+        String jsonContext = null;
+        try {
+            ObjectMapper mapper = new ObjectMapper();
+            jsonContext = mapper.writeValueAsString(routerCtx);
+        } catch (JsonProcessingException e) {
+            throw new SourceLoaderException("EPM UI JAVA Integration: the routerCtx is faild to convert to String.");
+        }
 
         Object html = runtime.executeJSFunction("render", jsonModel, jsonContext);
         releaseRuntime(runtime, runtimeObjects);
