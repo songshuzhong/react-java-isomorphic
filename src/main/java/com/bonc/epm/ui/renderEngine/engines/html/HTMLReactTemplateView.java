@@ -3,8 +3,6 @@ package com.bonc.epm.ui.renderEngine.engines.html;
 import com.bonc.epm.ui.renderEngine.context.RenderingContext;
 import com.bonc.epm.ui.renderEngine.engines.ReactAbstractEngine;
 
-import java.io.IOException;
-
 /**
  *@author sshuzhong
  *@mailTo <a href="mailto:songshuzhong@bonc.com.cn">Song ShuZhong</a>
@@ -19,7 +17,7 @@ public class HTMLReactTemplateView extends ReactAbstractEngine {
         this.templateUrl = templateUrl;
     }
 
-    private String getTemplate() throws IOException {
+    private String getTemplate() {
         if (templateCache == null) {
             templateCache = getResourceAsString(templateUrl);
         }
@@ -28,7 +26,7 @@ public class HTMLReactTemplateView extends ReactAbstractEngine {
     }
 
     @Override
-    public String render(String jsonModel, RenderingContext routerCtx) throws Exception {
+    public String render(String jsonModel, RenderingContext routerCtx) {
         String contextPath = routerCtx.getContext().getContextPath();
         String view = routerCtx.getLocation();
 

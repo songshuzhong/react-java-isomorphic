@@ -2,13 +2,12 @@ package com.bonc.epm.ui.renderEngine.engines.j2v8;
 
 import com.bonc.epm.ui.renderEngine.context.RenderingContext;
 import com.bonc.epm.ui.renderEngine.engines.ReactAbstractEngine;
-import com.bonc.epm.ui.renderEngine.exception.SourceLoaderException;
+import com.bonc.epm.ui.renderEngine.exception.JsLoaderException;
 import com.eclipsesource.v8.V8;
 import com.eclipsesource.v8.V8Value;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -48,7 +47,7 @@ public class J2V8ReactEnginer extends ReactAbstractEngine{
                 runtimeObjects.add((V8Value) object);
             }
         } catch (Exception e) {
-            throw new SourceLoaderException(String.format("EPM UI JAVA Integration: J2V8ReactEngine is faild to execute the %s.", script), e);
+            throw new JsLoaderException(String.format("EPM UI JAVA Integration: J2V8ReactEngine is failed to execute the %s.", script));
         }
     }
 
@@ -62,7 +61,7 @@ public class J2V8ReactEnginer extends ReactAbstractEngine{
             ObjectMapper mapper = new ObjectMapper();
             jsonContext = mapper.writeValueAsString(routerCtx);
         } catch (JsonProcessingException e) {
-            throw new SourceLoaderException("EPM UI JAVA Integration: the routerCtx is faild to convert to String.");
+            throw new JsLoaderException("EPM UI JAVA Integration: the routerCtx is failed to convert to String.");
         }
 
         Object html = runtime.executeJSFunction("render", jsonModel, jsonContext);

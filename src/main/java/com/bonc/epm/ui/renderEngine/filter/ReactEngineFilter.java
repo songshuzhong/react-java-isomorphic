@@ -21,7 +21,6 @@ import java.util.*;
 public class ReactEngineFilter implements Filter {
 
     private ReactEngineProxy react;
-    private ObjectMapper mapper = new ObjectMapper();
 
     public ReactEngineFilter() {
         react = new ReactEngineProxy("j2v8");
@@ -101,6 +100,7 @@ public class ReactEngineFilter implements Filter {
             }
         }
 
+        ObjectMapper mapper = new ObjectMapper();
         return mapper.writeValueAsString(map);
     }
 

@@ -2,7 +2,7 @@ package com.bonc.epm.ui.renderEngine.engines;
 
 import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.JSONObject;
-import com.bonc.epm.ui.renderEngine.exception.SourceLoaderException;
+import com.bonc.epm.ui.renderEngine.exception.JsLoaderException;
 
 import java.io.InputStream;
 
@@ -21,7 +21,7 @@ public abstract class ReactAbstractEngine implements ReactEngineTool {
         try {
             return getResourceAsString(path);
         } catch (Exception e) {
-            throw new SourceLoaderException(String.format("EPM UI JAVA Integration: the react engine is faild to load %s, please connect with songshuzhong@bonc.com.cn", path), e);
+            throw new JsLoaderException(String.format("EPM UI JAVA Integration: the react engine is failed to load %s, please connect with songshuzhong@bonc.com.cn", path));
         }
     }
 
@@ -55,7 +55,7 @@ public abstract class ReactAbstractEngine implements ReactEngineTool {
                 out.append(new String(b, 0, n));
             }
         } catch (Exception e) {
-            throw new SourceLoaderException(String.format("EPM UI JAVA Integration: the source loaded faild, because the %s cannot be identified", path), e);
+            throw new JsLoaderException(String.format("EPM UI JAVA Integration: the source loaded failed, because the %s cannot be identified", path));
         }
         return out.toString();
     }
