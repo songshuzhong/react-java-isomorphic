@@ -31,7 +31,7 @@ public class ReactEngineProxy {
         }
     }
 
-    public String render(String jsonModel, RenderingContext routerCtx) throws Exception {
+    public String render(String jsonModel, RenderingContext routerCtx) {
         return this.reactEngineTool.render(jsonModel, routerCtx);
     }
 }

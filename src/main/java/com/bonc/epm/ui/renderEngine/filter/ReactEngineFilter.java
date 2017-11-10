@@ -64,11 +64,7 @@ public class ReactEngineFilter implements Filter {
 
                 String html = "EPM UI Java Integration: wait until server side render finished.";
 
-                try {
-                    html = react.render(state, routerCtx);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                html = react.render(state, routerCtx);
 
                 servletResponse.setContentType("text/html;charset=UTF-8");
                 out.write(html.getBytes("UTF-8"));
