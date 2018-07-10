@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+    <meta charset="utf-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no"/>
+    <meta http-equiv="X-UA-Compatible" content="IE=edge, chrome=1"/>
+    <title>EPM UI Page</title>
+    <link rel="shortcut icon" href="#CONTEXT_PATH_PLACEHOLDER#/icons/favicon.ico"/>
+    <link rel="apple-touch-icon" sizes="57x57" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-57x57.png"/>
+    <link rel="apple-touch-icon" sizes="60x60" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-60x60.png"/>
+    <link rel="apple-touch-icon" sizes="72x72" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-72x72.png"/>
+    <link rel="apple-touch-icon" sizes="76x76" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-76x76.png"/>
+    <link rel="apple-touch-icon" sizes="114x114" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-114x114.png"/>
+    <link rel="apple-touch-icon" sizes="120x120" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-120x120.png"/>
+    <link rel="apple-touch-icon" sizes="144x144" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-144x144.png"/>
+    <link rel="apple-touch-icon" sizes="152x152" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-152x152.png"/>
+    <link rel="apple-touch-icon" sizes="180x180" href="#CONTEXT_PATH_PLACEHOLDER#/icons/apple-icon-180x180.png"/>
+    <link rel="icon" type="image/png" sizes="192x192" href="#CONTEXT_PATH_PLACEHOLDER#/icons/android-icon-192x192.png"/>
+    <link rel="icon" type="image/png" sizes="32x32" href="#CONTEXT_PATH_PLACEHOLDER#/icons/favicon-32x32.png"/>
+    <link rel="icon" type="image/png" sizes="96x96" href="#CONTEXT_PATH_PLACEHOLDER#/icons/favicon-96x96.png"/>
+    <link rel="icon" type="image/png" sizes="16x16" href="#CONTEXT_PATH_PLACEHOLDER#/icons/favicon-16x16.png"/>
+    <link rel="manifest" href="#CONTEXT_PATH_PLACEHOLDER#/icons/manifest.json"/>
+    <meta name="msapplication-TileColor" content="#FFFFFF"/>
+    <meta name="msapplication-TileImage" content="#CONTEXT_PATH_PLACEHOLDER#/icons/ms-icon-144x144.png"/>
+    <meta name="theme-color" content="#FFFFFF"/>
+    <link rel="stylesheet" href="#CONTEXT_PATH_PLACEHOLDER#/bower_components/epm-ui/dist/css/epm-ui.min.css"/>
+    <script src="#CONTEXT_PATH_PLACEHOLDER#/bower_components/react/react.js"></script>
+    <script src="#CONTEXT_PATH_PLACEHOLDER#/bower_components/react/react-dom.js"></script>
+    <script src="#CONTEXT_PATH_PLACEHOLDER#/bower_components/epm-ui/dist/javascript/epm-ui.min.js"></script>
+    <script src="#CONTEXT_PATH_PLACEHOLDER#/components/components.js"></script>
+    <script src="#CONTEXT_PATH_PLACEHOLDER#/views/#VIEW_NAME_PLACEHOLDER#.js"></script>
+</head>
+<body>
+<div id="epm-ui-page-root"></div>
+<script>if (window.EPMUI && window.EPMUIPage) {
+    EPMUI.context = {"contextPath": "#CONTEXT_PATH_PLACEHOLDER#"};
+    var container = document.getElementById("epm-ui-page-root");
+    var Page = EPMUIPage.default || EPMUIPage;
+    var page = Page.epmUIPage;
+
+    var promises = [];
+
+    if (page) {
+        document.title = page.title || "EPM UI Page";
+
+        page.css && page.css.forEach(function (url) {
+            var link = document.createElement("link");
+            link.href = "#CONTEXT_PATH_PLACEHOLDER#" + url;
+            link.rel = "stylesheet";
+            document.head.appendChild(link);
+        });
+
+        page.js && page.js.forEach(function (url) {
+            var script = document.createElement("script");
+            script.src = "#CONTEXT_PATH_PLACEHOLDER#" + url;
+
+            promises.push(new Promise(function (resolve, reject) {
+                script.onload = script.onreadystatechange = function() {
+                    console.log("onload");
+                    if(!this.readyState || this.readyState == 'loaded' || this.readyState == 'complete') {
+                        resolve();
+                    } else {
+                        reject(this.src);
+                    }
+                    // Handle memory leak in IE
+                    script.onload = script.onreadystatechange = null;
+                };
+                script.onerror = function () {
+                    reject(this.src);
+                }
+            }));
+
+            document.body.appendChild(script);
+        });
+    }
+
+    Promise.all(promises).then(function () {
+        ReactDOM.render(React.createElement(Page, #MODEL_JSON_PLACEHOLDER#), container);
+    }).catch(function (reason) {
+        console.error("资源加载失败：" + reason);
+    });
+}</script>
+</body>
+</html>

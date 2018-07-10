@@ -86,4 +86,8 @@ public class ReactResponseWrapper extends HttpServletResponseWrapper {
     private boolean isFound() {
         return status != SC_NOT_FOUND;
     }
+
+    public String getOriginContent() {
+        return baos.toString();
+    }
 }
