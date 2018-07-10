@@ -43,44 +43,48 @@ public class ReactEngineFilter implements Filter {
         HttpServletResponse httpServletResponse = (HttpServletResponse) servletResponse;
         HttpServletRequest httpServletRequest = (HttpServletRequest) servletRequest;
 
-        ReactResponseWrapper crw = new ReactResponseWrapper(this, httpServletResponse);
+        ReactResponseWrapper crw = new ReactResponseWrapper(httpServletResponse);
         filterChain.doFilter(servletRequest, crw);
 
         String responseContentType = httpServletResponse.getContentType();
 
-        if (responseContentType == null || responseContentType.contains("text/html")) {
+        OutputStream out = servletResponse.getOutputStream();
+
+        if (responseContentType == null) {
             String requestExpectType = httpServletRequest.getHeader("Accept");
 
             String state = getRequestAttribute(httpServletRequest);
 
-            OutputStream out = servletResponse.getOutputStream();
+            AppContext context = new AppContext(httpServletRequest.getContextPath());
+            RenderingContext routerCtx = new RenderingContext(context, httpServletRequest.getContextPath(), httpServletRequest.getRequestURI());
 
-            if (requestExpectType.contains("json")) {
+            String html = "EPM UI Java Integration: wait until server side render finished.";
+
+            if (requestExpectType == null) {
+                out.write(crw.getContent());
+            } else if (requestExpectType.contains("application/json")) {
                 servletResponse.setContentType("application/json");
-                out.write(state.getBytes("UTF-8"));
-            } else {
-                AppContext context = new AppContext(httpServletRequest.getContextPath());
-                RenderingContext routerCtx = new RenderingContext(context, httpServletRequest.getContextPath(), httpServletRequest.getRequestURI());
-
-                String html = "EPM UI Java Integration: wait until server side render finished.";
-
+                out.write(state.getBytes());
+            } else if (requestExpectType.contains("text/html")) {
                 html = react.render(state, routerCtx);
-
-                servletResponse.setContentType("text/html;charset=UTF-8");
-                out.write(html.getBytes("UTF-8"));
+                servletResponse.setContentType("text/html");
+                out.write(html.getBytes());
+            } else {
+                out.write(crw.getContent());
             }
-
-            out.close();
         } else {
-            filterChain.doFilter(servletRequest, servletResponse);
+            servletResponse.setContentLength(-1);
+            out.write(crw.getContent());
         }
+
+        out.close();
     }
 
     @Override
     public void destroy() {}
 
     /**
-     * separate model data from request
+     * @desc separate model data from request
      * @param request
      * @return Map<String, Object>
      */
@@ -101,3 +105,4 @@ public class ReactEngineFilter implements Filter {
     }
 
 }
+
