@@ -24,6 +24,6 @@ react-java-isomorphic是根据react组件库定制的一套开发工具包。该
 8.提供j2v8、nashorn和静态页面三种渲染引擎
 ```
 
-![image](https://www.processon.com/view/5bdaa870e4b0844e0bc30ca0)
+![image](https://songshuzhong.github.io/visualizer/static/img/react-java-isomorphic-uml.png)
 
-![image](https://www.processon.com/view/5bd8217be4b01e8839d92239)
+![image](https://songshuzhong.github.io/visualizer/static/img/react-java-isomorphic-process.png)
